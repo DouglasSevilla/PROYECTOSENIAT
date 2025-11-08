@@ -1,33 +1,53 @@
+// menu.js - controlador del menú lateral y carga dinámica de vistas
+// Versión limpia y robusta: evita referencias a `event` global y usa rutas relativas.
+
 // Función para cargar páginas dinámicamente
-function cargarPagina(pagina) {
+function cargarPagina(pagina, ev) {
+  if (!pagina) return
+
   // Remover clase active de todos los items
-  const menuItems = document.querySelectorAll(".menu-item")
-  menuItems.forEach((item) => item.classList.remove("active"))
+  const menuItems = document.querySelectorAll('.menu-item')
+  menuItems.forEach((item) => item.classList.remove('active'))
 
-  // Agregar clase active al item clickeado
-  event.currentTarget.classList.add("active")
+  // Si se pasó el evento, marcar el elemento; si no, buscar por onclick
+  if (ev && ev.currentTarget) {
+    ev.currentTarget.classList.add('active')
+  } else {
+    try {
+      const selector = `.menu-item[onclick*="${pagina}"]`
+      const clicked = document.querySelector(selector)
+      if (clicked) clicked.classList.add('active')
+    } catch (e) {
+      // ignore
+    }
+  }
 
-  // Cargar el contenido de la página
-  const contentDiv = document.getElementById("pageContent")
+  const contentDiv = document.getElementById('pageContent')
+  if (!contentDiv) return
 
   // Mostrar loading
   contentDiv.innerHTML =
     '<div class="text-center p-5"><div class="spinner-border text-danger" role="status"><span class="visually-hidden">Cargando...</span></div></div>'
 
-  // Hacer petición para cargar la vista
-  fetch(`vistas/${pagina}-vista.php`)
-    .then((response) => response.text())
+  // Ruta relativa a la carpeta de vistas
+  const url = 'vistas/' + pagina + '-vista.php'
+
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) throw new Error('HTTP ' + response.status)
+      return response.text()
+    })
     .then((html) => {
       contentDiv.innerHTML = html
-
-      // Cerrar sidebar en móvil después de seleccionar
+      // Cerrar sidebar en móvil
       if (window.innerWidth <= 768) {
-        document.getElementById("sidebar").classList.remove("active")
+        const sb = document.getElementById('sidebar')
+        if (sb) sb.classList.remove('active')
       }
     })
     .catch((error) => {
-      contentDiv.innerHTML = '<div class="alert alert-danger">Error al cargar la página</div>'
-      console.error("Error:", error)
+      contentDiv.innerHTML = `<div class="alert alert-danger">Error al cargar la página: ${error.message}</div>`
+      console.error('Error al cargar vista:', error)
     })
 }
 
@@ -56,12 +76,8 @@ function cargarPagina(pagina) {
   contentDiv.innerHTML =
     '<div class="text-center p-5"><div class="spinner-border text-danger" role="status"><span class="visually-hidden">Cargando...</span></div></div>'
 
-  // Calcular ruta base (asegura que funcione aunque la app no esté en la raíz)
-  let basePath = window.location.pathname
-  if (!basePath.endsWith('/')) {
-    basePath = basePath.substring(0, basePath.lastIndexOf('/') + 1)
-  }
-  const url = window.location.origin + basePath + 'vistas/' + pagina + '-vista.php'
+  // Usar ruta relativa simple compatible con XAMPP
+  const url = 'vistas/' + pagina + '-vista.php';
 
   // Hacer petición para cargar la vista
   fetch(url)
