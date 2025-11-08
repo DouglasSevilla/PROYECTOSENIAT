@@ -36,3 +36,6 @@ phpunit.xml.dist
 # y mantener una plantilla `config/conexion.example.php` en su lugar.
 # Ejemplo (descomenta si lo deseas):
 # /config/conexion.php
+
+# Ignorar el archivo de conexión real (contiene credenciales)
+/config/conexion.php

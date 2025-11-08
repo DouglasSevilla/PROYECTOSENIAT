@@ -1,3 +1,38 @@
+# PROYECTO-SENIAT
+
+Proyecto de control de asistencia y gestión para SENIAT — Nirgua.
+
+Contenido
+- Código PHP (carpeta raíz y `vistas/`, `modelo/`, `controlador/`)
+- Archivos de vista y estilos en `vistas/`
+
+Cómo clonar este repositorio
+
+```powershell
+git clone https://github.com/DouglasSevilla/PROYECTOSENIAT.git
+cd PROYECTOSENIAT
+```
+
+Preparar la conexión a la base de datos
+- Por seguridad, el archivo `config/conexion.php` está en `.gitignore`.
+- Crea una copia del archivo de ejemplo:
+
+```powershell
+copy .\config\conexion.example.php .\config\conexion.php
+# Luego edita config\conexion.php con tus credenciales
+```
+
+Ejecución local con XAMPP
+1. Coloca la carpeta `PROYECTOSENIAT` en `C:\xampp\htdocs\` (ya debe estar ahí).
+2. Inicia Apache y MySQL desde el panel de XAMPP.
+3. Importa la base de datos (si tienes un `.sql`) o crea la base `proyectoseniat` y tablas necesarias.
+4. Accede en el navegador a: `http://localhost/PROYECTOSENIAT/`
+
+Notas de seguridad
+- No subas credenciales reales. Si ya subiste credenciales por error, rota las contraseñas y considera limpiar el historial Git.
+
+Contacto
+- Autor: Douglas Sevilla
 # Sistema de Control SENIAT - Nirgua
 
 Sistema web institucional para el control de asistencia y gestión de empleados del SENIAT, sede Nirgua.
