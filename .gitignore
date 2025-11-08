@@ -1,0 +1,38 @@
+# Ignorar dependencias y artefactos comunes
+/vendor/
+/node_modules/
+
+# Entornos y configuración sensible
+.env
+.env.local
+*.local
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# IDEs y editores
+.vscode/
+.idea/
+*.iml
+
+# Logs y temporales
+*.log
+/tmp/
+*.swp
+*.bak
+
+# Composer
+/composer.lock
+
+# PHPUnit
+phpunit.xml
+phpunit.xml.dist
+
+# Bases de datos y backups
+*.sql
+
+# Opcional: si tu archivo de conexión contiene credenciales, considera ignorarlo
+# y mantener una plantilla `config/conexion.example.php` en su lugar.
+# Ejemplo (descomenta si lo deseas):
+# /config/conexion.php
