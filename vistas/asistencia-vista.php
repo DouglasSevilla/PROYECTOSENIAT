@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../modelo/Empleado.php';
-require_once __DIR__ . '/../modelo/Asistencia.php';
+require_once __DIR__ . '/../modelo/empleado-modelo.php';
+require_once __DIR__ . '/../modelo/asistencia-modelo.php';
 
 $modeloEmpleado = new Empleado();
 $modeloAsistencia = new Asistencia();
@@ -136,7 +136,7 @@ function registrarEntrada(event) {
     const formData = new FormData(form);
     formData.append('accion', 'registrar_entrada');
     
-    fetch('controlador/AsistenciaController.php', {
+    fetch('controlador/asistencia-controlador.php', {
         method: 'POST',
         body: formData
     })
@@ -159,7 +159,7 @@ function registrarSalida(event) {
     const formData = new FormData(form);
     formData.append('accion', 'registrar_salida');
     
-    fetch('controlador/AsistenciaController.php', {
+    fetch('controlador/asistencia-controlador.php', {
         method: 'POST',
         body: formData
     })
