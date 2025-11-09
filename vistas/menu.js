@@ -24,8 +24,10 @@ function cargarPagina(pagina, ev) {
   contentDiv.innerHTML = '<div class="text-center p-5"><div class="spinner-border text-danger" role="status"><span class="visually-hidden">Cargando...</span></div></div>';
 
   const url = 'vistas/' + pagina + '-vista.php';
+  console.log('Cargando vista:', url)
   fetch(url)
     .then((response) => {
+      console.log('Respuesta vista', response.status, url)
       if (!response.ok) throw new Error('HTTP ' + response.status);
       return response.text();
     })
