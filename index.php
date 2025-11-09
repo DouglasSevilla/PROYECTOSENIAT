@@ -27,7 +27,7 @@ $nombre_usuario = $_SESSION['nombre_usuario'];
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="vista/css/estilos.css">
+    <link rel="stylesheet" href="vistas/estilos.css">
 </head>
 <body>
     <!-- Sidebar -->
@@ -44,44 +44,44 @@ $nombre_usuario = $_SESSION['nombre_usuario'];
         </div>
         
         <ul class="sidebar-menu">
-            <li class="menu-item active" onclick="cargarPagina('inicio')">
+            <li class="menu-item active" onclick="cargarPagina('inicio', event)">
                 <i class="fas fa-home"></i>
                 <span>Inicio</span>
             </li>
             
-            <li class="menu-item" onclick="cargarPagina('asistencia')">
+            <li class="menu-item" onclick="cargarPagina('asistencia', event)">
                 <i class="fas fa-clock"></i>
                 <span>Registro de Asistencia</span>
             </li>
             
             <?php if ($rol === 'Administrador'): ?>
-            <li class="menu-item" onclick="cargarPagina('empleados')">
+            <li class="menu-item" onclick="cargarPagina('empleados', event)">
                 <i class="fas fa-users"></i>
                 <span>Registro de Empleados</span>
             </li>
             
-            <li class="menu-item" onclick="cargarPagina('incidencias')">
+            <li class="menu-item" onclick="cargarPagina('incidencias', event)">
                 <i class="fas fa-file-alt"></i>
                 <span>Incidencias</span>
             </li>
             
-            <li class="menu-item" onclick="cargarPagina('reportes')">
+            <li class="menu-item" onclick="cargarPagina('reportes', event)">
                 <i class="fas fa-chart-bar"></i>
                 <span>Reportes</span>
             </li>
             
-            <li class="menu-item" onclick="cargarPagina('cumpleanos')">
+            <li class="menu-item" onclick="cargarPagina('cumpleanos', event)">
                 <i class="fas fa-birthday-cake"></i>
                 <span>Cumpleaños</span>
             </li>
             
-            <li class="menu-item" onclick="cargarPagina('historial')">
+            <li class="menu-item" onclick="cargarPagina('historial', event)">
                 <i class="fas fa-clipboard-list"></i>
                 <span>Historial de Operaciones</span>
             </li>
             <?php endif; ?>
             
-            <li class="menu-item logout-item" onclick="cerrarSesion()">
+            <li class="menu-item logout-item" onclick="cerrarSesion(event)">
                 <i class="fas fa-sign-out-alt"></i>
                 <span>Cerrar Sesión</span>
             </li>
@@ -106,6 +106,6 @@ $nombre_usuario = $_SESSION['nombre_usuario'];
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Custom JS -->
-    <script src="vista/js/menu.js"></script>
+    <script src="vistas/menu.js"></script>
 </body>
 </html>

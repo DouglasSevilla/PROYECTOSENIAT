@@ -18,7 +18,7 @@
                 </div>
                 <div class="card-body">
                     <?php
-                    require_once '../modelo/empleado-modelo.php';
+                    require_once __DIR__ . '/../modelo/empleado-modelo.php';
                     $empleadoModelo = new Empleado();
                     $cumpleanos = $empleadoModelo->obtenerCumpleanosMes();
                     

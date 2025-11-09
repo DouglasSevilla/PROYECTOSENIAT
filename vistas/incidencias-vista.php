@@ -37,7 +37,7 @@
                             </thead>
                             <tbody>
                                 <?php
-                                require_once '../modelo/incidencia-modelo.php';
+                                require_once __DIR__ . '/../modelo/incidencia-modelo.php';
                                 $incidenciaModelo = new Incidencia();
                                 $incidencias = $incidenciaModelo->obtenerTodas();
                                 
@@ -80,7 +80,7 @@
                         <select class="form-select" name="id_empleado" required>
                             <option value="">Seleccione...</option>
                             <?php
-                            require_once '../modelo/empleado-modelo.php';
+                            require_once __DIR__ . '/../modelo/empleado-modelo.php';
                             $empleadoModelo = new Empleado();
                             $empleados = $empleadoModelo->obtenerActivos();
                             foreach ($empleados as $emp) {

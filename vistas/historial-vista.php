@@ -27,7 +27,7 @@
                             </thead>
                             <tbody>
                                 <?php
-                                require_once '../modelo/historial-modelo.php';
+                                require_once __DIR__ . '/../modelo/historial-modelo.php';
                                 $historialModelo = new HistorialOperacion();
                                 $operaciones = $historialModelo->obtenerRecientes(50);
                                 
