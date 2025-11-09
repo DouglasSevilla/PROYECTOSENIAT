@@ -62,6 +62,15 @@ class EmpleadoController {
     }
 }
 
+// Soporte para obtener empleado por ID vía GET (uso desde JS)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['action']) && $_GET['action'] === 'obtener' && isset($_GET['id'])) {
+    $controller = new EmpleadoController();
+    $empleado = $controller->modeloEmpleado->obtenerPorId($_GET['id']);
+    header('Content-Type: application/json');
+    echo json_encode($empleado);
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
     $controller = new EmpleadoController();
     

@@ -111,9 +111,68 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-seniat-rojo">Guardar</button>
+                    <button type="button" id="btnGuardarEmpleado" class="btn btn-seniat-rojo">Guardar</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+// Manejar creación/actualización vía fetch al controlador
+document.getElementById('btnGuardarEmpleado').addEventListener('click', function(){
+    const modal = document.getElementById('modalEmpleado');
+    const form = modal.querySelector('form');
+    const formData = new FormData(form);
+    const id = formData.get('id_empleado');
+    const accion = id ? 'actualizar' : 'crear';
+    formData.append('accion', accion);
+
+    fetch('controlador/empleado-controlador.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            // cerrar modal y recargar la vista
+            const bsModal = bootstrap.Modal.getInstance(document.getElementById('modalEmpleado'));
+            if (bsModal) bsModal.hide();
+            cargarPagina('empleados');
+        } else {
+            alert(data.mensaje || 'Error al guardar');
+        }
+    })
+    .catch(err => { console.error(err); alert('Error de red'); });
+});
+
+function editarEmpleado(id) {
+    fetch('controlador/empleado-controlador.php?action=obtener&id=' + encodeURIComponent(id))
+    .then(res => res.json())
+    .then(emp => {
+        const modal = document.getElementById('modalEmpleado');
+        modal.querySelector('#id_empleado').value = emp.id_empleado || '';
+        modal.querySelector('input[name="cedula"]').value = emp.cedula || '';
+        modal.querySelector('input[name="nombre_completo"]').value = emp.nombre_completo || '';
+        modal.querySelector('input[name="departamento"]').value = emp.departamento || '';
+        modal.querySelector('input[name="fecha_nacimiento"]').value = emp.fecha_nacimiento || '';
+        modal.querySelector('input[name="fecha_ingreso"]').value = emp.fecha_ingreso || '';
+        const bsModal = new bootstrap.Modal(modal);
+        bsModal.show();
+    })
+    .catch(err => { console.error(err); alert('No se pudo cargar datos del empleado'); });
+}
+
+function eliminarEmpleado(id) {
+    if (!confirm('¿Eliminar este empleado?')) return;
+    const fd = new FormData();
+    fd.append('accion', 'eliminar');
+    fd.append('id_empleado', id);
+    fetch('controlador/empleado-controlador.php', { method: 'POST', body: fd })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) cargarPagina('empleados'); else alert(data.mensaje || 'Error al eliminar');
+    })
+    .catch(err => { console.error(err); alert('Error de red'); });
+}
+</script>
