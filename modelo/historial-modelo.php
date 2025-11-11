@@ -18,7 +18,12 @@ class HistorialOperacion {
         $stmt->bindParam(":accion", $accion);
         $stmt->bindParam(":tabla", $tabla_afectada);
         $stmt->bindParam(":id_registro", $id_registro_afectado);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar INSERT historial: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function obtenerTodas($limite = 100) {
@@ -29,7 +34,11 @@ class HistorialOperacion {
                   LIMIT :limite";
         $stmt = $this->conexion->prepare($query);
         $stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
-        $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar SELECT historial_all: ' . implode(' | ', $err));
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -43,7 +52,11 @@ class HistorialOperacion {
         $stmt = $this->conexion->prepare($query);
         $stmt->bindParam(":id_usuario", $id_usuario);
         $stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
-        $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar SELECT historial_por_usuario: ' . implode(' | ', $err));
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -58,7 +71,11 @@ class HistorialOperacion {
         $stmt->bindParam(":fecha_inicio", $fecha_inicio);
         $stmt->bindParam(":fecha_fin", $fecha_fin);
         $stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
-        $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar SELECT historial_rango: ' . implode(' | ', $err));
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -87,7 +104,11 @@ class HistorialOperacion {
             $stmt->bindParam(":tabla", $tabla);
         }
         $stmt->bindParam(":limite", $limite, PDO::PARAM_INT);
-        $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar SELECT historial_filtros: ' . implode(' | ', $err));
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

@@ -16,7 +16,11 @@ class Incidencia {
                   INNER JOIN empleados e ON i.id_empleado = e.id_empleado 
                   ORDER BY i.fecha_inicio DESC";
         $stmt = $this->conexion->prepare($query);
-        $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar SELECT incidencias: ' . implode(' | ', $err));
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
@@ -29,7 +33,12 @@ class Incidencia {
         $stmt->bindParam(":fecha_inicio", $fecha_inicio);
         $stmt->bindParam(":fecha_fin", $fecha_fin);
         $stmt->bindParam(":descripcion", $descripcion);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar INSERT incidencia: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function actualizar($id, $tipo_incidencia, $fecha_inicio, $fecha_fin, $descripcion) {
@@ -41,14 +50,24 @@ class Incidencia {
         $stmt->bindParam(":fecha_inicio", $fecha_inicio);
         $stmt->bindParam(":fecha_fin", $fecha_fin);
         $stmt->bindParam(":descripcion", $descripcion);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar UPDATE incidencia: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function eliminar($id) {
         $query = "DELETE FROM " . $this->tabla . " WHERE id_incidencia = :id";
         $stmt = $this->conexion->prepare($query);
         $stmt->bindParam(":id", $id);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar DELETE incidencia: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function obtenerPorRangoFechas($fecha_inicio, $fecha_fin, $tipo = null) {
@@ -73,7 +92,11 @@ class Incidencia {
         if ($tipo) {
             $stmt->bindParam(":tipo", $tipo);
         }
-        $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar SELECT incidencias por rango: ' . implode(' | ', $err));
+        }
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
