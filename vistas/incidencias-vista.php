@@ -73,7 +73,7 @@
                 <h5 class="modal-title">Registrar Incidencia</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <form method="POST" action="index.php?page=incidencias&action=guardar">
+            <form id="formIncidencia">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Empleado</label>
@@ -82,7 +82,7 @@
                             <?php
                             require_once __DIR__ . '/../modelo/empleado-modelo.php';
                             $empleadoModelo = new Empleado();
-                            $empleados = $empleadoModelo->obtenerActivos();
+                            $empleados = $empleadoModelo->obtenerTodos();
                             foreach ($empleados as $emp) {
                                 echo "<option value='{$emp['id_empleado']}'>{$emp['nombre_completo']}</option>";
                             }
@@ -125,3 +125,38 @@
         </div>
     </div>
 </div>
+
+<script>
+// Manejo via AJAX para crear/incidencia y eliminar
+document.getElementById('formIncidencia').addEventListener('submit', function(e){
+    e.preventDefault();
+    const form = e.target;
+    const fd = new FormData(form);
+    fd.append('accion', 'crear');
+    fetch('controlador/incidencia-controlador.php', { method: 'POST', body: fd })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            const bsModal = bootstrap.Modal.getInstance(document.getElementById('modalIncidencia')) || new bootstrap.Modal(document.getElementById('modalIncidencia'));
+            bsModal.hide();
+            cargarPagina('incidencias');
+        } else {
+            alert(data.mensaje || 'Error al guardar incidencia');
+        }
+    })
+    .catch(err => { console.error(err); alert('Error de red'); });
+});
+
+function eliminarIncidencia(id) {
+    if (!confirm('¿Eliminar incidencia?')) return;
+    const fd = new FormData();
+    fd.append('accion', 'eliminar');
+    fd.append('id_incidencia', id);
+    fetch('controlador/incidencia-controlador.php', { method: 'POST', body: fd })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) cargarPagina('incidencias'); else alert(data.mensaje || 'Error al eliminar');
+    })
+    .catch(err => { console.error(err); alert('Error de red'); });
+}
+</script>
