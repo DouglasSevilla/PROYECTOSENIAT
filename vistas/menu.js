@@ -93,3 +93,33 @@ document.addEventListener('click', (event) => {
 document.addEventListener('DOMContentLoaded', () => {
   cargarPagina('inicio');
 });
+
+// Delegated handler: captura clicks en botones dentro de las vistas cargadas dinámicamente
+document.addEventListener('click', (e) => {
+  // Guardar empleado (delegado) - botón con id btnGuardarEmpleado
+  const btn = e.target.closest('#btnGuardarEmpleado');
+  if (btn) {
+    e.preventDefault();
+    const modal = document.getElementById('modalEmpleado');
+    if (!modal) return;
+    const form = modal.querySelector('form');
+    if (!form) return;
+    const formData = new FormData(form);
+    const id = formData.get('id_empleado');
+    const accion = id ? 'actualizar' : 'crear';
+    formData.append('accion', accion);
+
+    fetch('controlador/empleado-controlador.php', { method: 'POST', body: formData })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          const bsModal = bootstrap.Modal.getInstance(modal);
+          if (bsModal) bsModal.hide();
+          cargarPagina('empleados');
+        } else {
+          alert(data.mensaje || 'Error al guardar');
+        }
+      })
+      .catch(err => { console.error(err); alert('Error de red'); });
+  }
+});
