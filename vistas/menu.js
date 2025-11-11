@@ -32,7 +32,21 @@ function cargarPagina(pagina, ev) {
       return response.text();
     })
     .then((html) => {
-      contentDiv.innerHTML = html;
+        contentDiv.innerHTML = html;
+        // Ejecutar scripts incluidos en el HTML cargado (los navegadores no ejecutan <script> cuando se inserta via innerHTML)
+        const scripts = Array.from(contentDiv.querySelectorAll('script'));
+        scripts.forEach((oldScript) => {
+          const newScript = document.createElement('script');
+          // copiar atributos (src, type, etc.)
+          for (let i = 0; i < oldScript.attributes.length; i++) {
+            const attr = oldScript.attributes[i];
+            newScript.setAttribute(attr.name, attr.value);
+          }
+          // inline script: copiar contenido
+          if (oldScript.textContent) newScript.textContent = oldScript.textContent;
+          // Reemplazar el script viejo por el nuevo para forzar su ejecución
+          oldScript.parentNode.replaceChild(newScript, oldScript);
+        });
       if (window.innerWidth <= 768) {
         const sb = document.getElementById('sidebar');
         if (sb) sb.classList.remove('active');
