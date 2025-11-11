@@ -21,7 +21,12 @@ class Asistencia {
         $stmt->bindParam(":fecha", $fecha);
         $stmt->bindParam(":hora", $hora);
         $stmt->bindParam(":observacion", $observacion);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar INSERT asistencia (entrada): ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function registrarSalida($id_empleado, $observacion = null) {
@@ -35,7 +40,12 @@ class Asistencia {
         $stmt->bindParam(":fecha", $fecha);
         $stmt->bindParam(":hora", $hora);
         $stmt->bindParam(":observacion", $observacion);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar UPDATE asistencia (salida): ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function obtenerPorFecha($fecha) {

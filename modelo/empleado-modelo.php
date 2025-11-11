@@ -34,7 +34,12 @@ class Empleado {
         $stmt->bindParam(":departamento", $departamento);
         $stmt->bindParam(":fecha_nac", $fecha_nacimiento);
         $stmt->bindParam(":fecha_ing", $fecha_ingreso);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar INSERT empleado: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function actualizar($id, $cedula, $nombre_completo, $departamento, $fecha_nacimiento, $fecha_ingreso) {
@@ -48,14 +53,24 @@ class Empleado {
         $stmt->bindParam(":departamento", $departamento);
         $stmt->bindParam(":fecha_nac", $fecha_nacimiento);
         $stmt->bindParam(":fecha_ing", $fecha_ingreso);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar UPDATE empleado: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function eliminar($id) {
         $query = "UPDATE " . $this->tabla . " SET activo = 0 WHERE id_empleado = :id";
         $stmt = $this->conexion->prepare($query);
         $stmt->bindParam(":id", $id);
-        return $stmt->execute();
+        $ok = $stmt->execute();
+        if (!$ok) {
+            $err = $stmt->errorInfo();
+            throw new Exception('Error al ejecutar DELETE(logical) empleado: ' . implode(' | ', $err));
+        }
+        return $ok;
     }
     
     public function obtenerCumpleanerosMes($mes) {
