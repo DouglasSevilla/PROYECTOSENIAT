@@ -62,29 +62,34 @@ class IncidenciaController {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
+    header('Content-Type: application/json');
     $controller = new IncidenciaController();
-    
-    if ($_POST['accion'] === 'crear') {
-        $resultado = $controller->crear(
-            $_POST['id_empleado'],
-            $_POST['tipo_incidencia'],
-            $_POST['fecha_inicio'],
-            $_POST['fecha_fin'],
-            $_POST['descripcion']
-        );
-        echo json_encode($resultado);
-    } elseif ($_POST['accion'] === 'actualizar') {
-        $resultado = $controller->actualizar(
-            $_POST['id_incidencia'],
-            $_POST['tipo_incidencia'],
-            $_POST['fecha_inicio'],
-            $_POST['fecha_fin'],
-            $_POST['descripcion']
-        );
-        echo json_encode($resultado);
-    } elseif ($_POST['accion'] === 'eliminar') {
-        $resultado = $controller->eliminar($_POST['id_incidencia']);
-        echo json_encode($resultado);
+    try {
+        if ($_POST['accion'] === 'crear') {
+            $resultado = $controller->crear(
+                $_POST['id_empleado'],
+                $_POST['tipo_incidencia'],
+                $_POST['fecha_inicio'],
+                $_POST['fecha_fin'],
+                $_POST['descripcion']
+            );
+            echo json_encode($resultado);
+        } elseif ($_POST['accion'] === 'actualizar') {
+            $resultado = $controller->actualizar(
+                $_POST['id_incidencia'],
+                $_POST['tipo_incidencia'],
+                $_POST['fecha_inicio'],
+                $_POST['fecha_fin'],
+                $_POST['descripcion']
+            );
+            echo json_encode($resultado);
+        } elseif ($_POST['accion'] === 'eliminar') {
+            $resultado = $controller->eliminar($_POST['id_incidencia']);
+            echo json_encode($resultado);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()]);
     }
+    exit();
 }
 ?>

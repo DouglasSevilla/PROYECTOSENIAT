@@ -4,7 +4,7 @@ require_once __DIR__ . '/../config/conexion.php';
 require_once __DIR__ . '/../modelo/historial-modelo.php';
 
 // Verificar sesión
-if (!isset($_SESSION['usuario_id'])) {
+if (!isset($_SESSION['id_usuario'])) {
     header('Location: ../login.php');
     exit();
 }

@@ -60,6 +60,12 @@ $nombre_usuario = $_SESSION['nombre_usuario'];
                 <span>Registro de Empleados</span>
             </li>
             
+            <!-- Agregar opción de gestión de usuarios en el menú -->
+            <li class="menu-item" onclick="cargarPagina('usuarios', event)">
+                <i class="fas fa-users-cog"></i>
+                <span>Gestión de Usuarios</span>
+            </li>
+            
             <li class="menu-item" onclick="cargarPagina('incidencias', event)">
                 <i class="fas fa-file-alt"></i>
                 <span>Incidencias</span>
@@ -109,3 +115,4 @@ $nombre_usuario = $_SESSION['nombre_usuario'];
     <script src="vistas/menu.js"></script>
 </body>
 </html>
+

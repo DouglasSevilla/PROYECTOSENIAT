@@ -8,53 +8,66 @@ class AsistenciaController {
     private $modeloAsistencia;
     private $modeloEmpleado;
     private $modeloHistorial;
-    
+
     public function __construct() {
-        $this->modeloAsistencia = new AsistenciaModelo();
-        $this->modeloEmpleado = new EmpleadoModelo();
-        $this->modeloHistorial = new HistorialModelo();
+        $this->modeloAsistencia = new Asistencia();
+        $this->modeloEmpleado = new Empleado();
+        $this->modeloHistorial = new HistorialOperacion();
     }
-    
+
     public function registrarEntrada($id_empleado, $observacion = null) {
-        $verificar = $this->modeloAsistencia->verificarEntradaHoy($id_empleado);
-        
-        if ($verificar) {
-            return ['success' => false, 'mensaje' => 'El empleado ya registró entrada hoy'];
+        try {
+            if (!$id_empleado) {
+                return ['success' => false, 'mensaje' => 'Empleado no especificado'];
+            }
+
+            $verificar = $this->modeloAsistencia->verificarEntradaHoy($id_empleado);
+            if ($verificar) {
+                return ['success' => false, 'mensaje' => 'El empleado ya registró entrada hoy'];
+            }
+
+            $resultado = $this->modeloAsistencia->registrarEntrada($id_empleado, $observacion);
+            if ($resultado) {
+                $empleado = $this->modeloEmpleado->obtenerPorId($id_empleado);
+                $this->modeloHistorial->registrar(
+                    $_SESSION['id_usuario'] ?? null,
+                    "Registro de entrada: " . $empleado['nombre_completo'],
+                    "asistencia",
+                    $id_empleado
+                );
+                return ['success' => true, 'mensaje' => 'Entrada registrada correctamente para ' . $empleado['nombre_completo']];
+            }
+
+            return ['success' => false, 'mensaje' => 'Error al registrar entrada'];
+        } catch (Exception $e) {
+            return ['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()];
         }
-        
-        $resultado = $this->modeloAsistencia->registrarEntrada($id_empleado, $observacion);
-        
-        if ($resultado) {
-            $empleado = $this->modeloEmpleado->obtenerPorId($id_empleado);
-            $this->modeloHistorial->registrar(
-                $_SESSION['id_usuario'], 
-                "Registro de entrada: " . $empleado['nombre_completo'], 
-                "asistencia", 
-                $id_empleado
-            );
-            return ['success' => true, 'mensaje' => 'Entrada registrada correctamente'];
-        }
-        
-        return ['success' => false, 'mensaje' => 'Error al registrar entrada'];
     }
-    
+
     public function registrarSalida($id_empleado, $observacion = null) {
-        $resultado = $this->modeloAsistencia->registrarSalida($id_empleado, $observacion);
-        
-        if ($resultado) {
-            $empleado = $this->modeloEmpleado->obtenerPorId($id_empleado);
-            $this->modeloHistorial->registrar(
-                $_SESSION['id_usuario'], 
-                "Registro de salida: " . $empleado['nombre_completo'], 
-                "asistencia", 
-                $id_empleado
-            );
-            return ['success' => true, 'mensaje' => 'Salida registrada correctamente'];
+        try {
+            if (!$id_empleado) {
+                return ['success' => false, 'mensaje' => 'Empleado no especificado'];
+            }
+
+            $resultado = $this->modeloAsistencia->registrarSalida($id_empleado, $observacion);
+            if ($resultado) {
+                $empleado = $this->modeloEmpleado->obtenerPorId($id_empleado);
+                $this->modeloHistorial->registrar(
+                    $_SESSION['id_usuario'] ?? null,
+                    "Registro de salida: " . $empleado['nombre_completo'],
+                    "asistencia",
+                    $id_empleado
+                );
+                return ['success' => true, 'mensaje' => 'Salida registrada correctamente para ' . $empleado['nombre_completo']];
+            }
+
+            return ['success' => false, 'mensaje' => 'Error al registrar salida'];
+        } catch (Exception $e) {
+            return ['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()];
         }
-        
-        return ['success' => false, 'mensaje' => 'Error al registrar salida'];
     }
-    
+
     public function obtenerAsistenciaHoy() {
         $fecha = date('Y-m-d');
         return $this->modeloAsistencia->obtenerPorFecha($fecha);
@@ -62,14 +75,23 @@ class AsistenciaController {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion'])) {
+    header('Content-Type: application/json');
     $controller = new AsistenciaController();
-    
-    if ($_POST['accion'] === 'registrar_entrada') {
-        $resultado = $controller->registrarEntrada($_POST['id_empleado'], $_POST['observacion'] ?? null);
-        echo json_encode($resultado);
-    } elseif ($_POST['accion'] === 'registrar_salida') {
-        $resultado = $controller->registrarSalida($_POST['id_empleado'], $_POST['observacion'] ?? null);
-        echo json_encode($resultado);
+
+    try {
+        $id_empleado = $_POST['id_empleado'] ?? '';
+        $observacion = $_POST['observacion'] ?? null;
+
+        if ($_POST['accion'] === 'registrar_entrada') {
+            echo json_encode($controller->registrarEntrada($id_empleado, $observacion));
+        } elseif ($_POST['accion'] === 'registrar_salida') {
+            echo json_encode($controller->registrarSalida($id_empleado, $observacion));
+        } else {
+            echo json_encode(['success' => false, 'mensaje' => 'Acción no reconocida']);
+        }
+    } catch (Exception $e) {
+        echo json_encode(['success' => false, 'mensaje' => 'Error: ' . $e->getMessage()]);
     }
+    exit();
 }
 ?>
